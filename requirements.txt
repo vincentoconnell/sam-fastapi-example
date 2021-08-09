@@ -1,0 +1,26 @@
+fastapi==0.61.1
+uvloop==0.14.0
+mangum==0.10.0
+pydantic==1.7.2
+typing_extensions==3.7.4.3
+# pytest
+# requests
+SQLAlchemy==1.3.20
+psycopg2-binary==2.8.6
+# databases[postgresql]
+pandas==1.1.2
+numpy==1.19.4
+pyasn1==0.4.8
+pycparser==2.20
+plotly==4.10.0
+python-jose==3.2.0
+cryptography==3.2.1
+cffi==1.14.3
+ecdsa==0.14.1
+rsa==4.6
+six==1.15.0
+python_dateutil==2.8.1
+python_jose==3.2.0
+pytz==2020.4
+retrying==1.3.3
+starlette==0.13.6

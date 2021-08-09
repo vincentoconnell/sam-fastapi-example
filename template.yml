@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    fastAPI aws lambda example
+Resources:
+    FastapiBackendLambda:
+        Type: AWS::Serverless::Function
+        Properties:
+            Events:
+                ApiEvent:
+                    Properties:
+                        RestApiId:
+                            Ref: ClientGateway
+                        Path: /api/{proxy+}
+                        Method: ANY
+                    Type: Api
+            FunctionName: fastapi-backend
+            CodeUri: ./
+            Handler: app.main.handler
+            Runtime: python3.8
+            Timeout: 300 # timeout of your lambda function
+            MemorySize: 128 # memory size of your lambda function
+            Description: fastAPI SAM application
+            # other options, see ->
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-supported-resources-and-properties
+            Role: !Sub arn:aws:iam::${AWS::AccountId}:role/fastapi-serverless-execution-role
+            VpcConfig:
+                SecurityGroupIds: 
+                    - sg-####
+                    - sg-####
+                SubnetIds: 
+                    - subnet-####
+                    - subnet-####
+            Tags:
+                ENVIRONMENT: prod
+                PROJECT: PROJECT
+                Name: fastapi-backend
+                Automation: SAM
+                BitbucketPipelineIntegration: "No"
+                Application: API
+                Feature: Data Api
+                Team: Software
+                Owner/Administrator: Software
+                Backup: Git
+                Type: Lambda
+
+    ClientGateway:
+        Type: AWS::Serverless::Api
+        Properties:
+            StageName: prod
+            OpenApiVersion: '3.0.0'
+            Auth:
+                DefaultAuthorizer: FastapiBackendAuth
+                Authorizers:
+                    FastapiBackendAuth:
+                        UserPoolArn: arn:aws:cognito-idp:ca-central-1:${AWS::AccountId}:userpool/ca-central-1_blahblahblah
+                AddDefaultAuthorizerToCorsPreflight: False
+            Cors:
+                AllowMethods: "'POST, GET, OPTIONS, DELETE, PUT'"
+                AllowHeaders: "'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token, Access-Control-Allow-Origin, Access-Control-Allow-Methods'" 
+                AllowOrigin: "'*'"
+            GatewayResponses:
+                DEFAULT_4xx:
+                    ResponseParameters:
+                        Headers:
+                            Access-Control-Allow-Origin: "'*'"
+                DEFAULT_5xx:
+                    ResponseParameters:
+                        Headers:
+                            Access-Control-Allow-Origin: "'*'"
+            Tags:
+                ENVIRONMENT: prod
+                PROJECT: PROJECT
+                Name: fastapi-backend
+                Automation: SAM
+                BitbucketPipelineIntegration: "No"
+                Application: API
+                Feature: Data Api
+                Team: Software
+                Owner/Administrator: Software
+                Backup: Git
+                Type: GatewayAPI
